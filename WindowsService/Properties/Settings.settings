@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WindowsService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Url" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost/save_cheques</Value>
+    </Setting>
+    <Setting Name="PathCompleteDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\User\Documents\Complete</Value>
+    </Setting>
+    <Setting Name="PathGarbageDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\User\Documents\Garbage</Value>
+    </Setting>
+    <Setting Name="PathDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\User\Documents</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
