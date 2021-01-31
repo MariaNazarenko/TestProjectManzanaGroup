@@ -1,13 +1,16 @@
 using System.Web.Http;
+using System.Linq;
 using WebActivatorEx;
 using WebApi;
 using Swashbuckle.Application;
-using System.Linq;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
 namespace WebApi
 {
+    /// <summary>
+    /// Конфигуратор сваггера
+    /// </summary>
     public class SwaggerConfig
     {
         public static void Register()
@@ -19,7 +22,6 @@ namespace WebApi
                     {
                         c.SingleApiVersion("v1", "WebApi");
                         c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-
                     })
                 .EnableSwaggerUi(c =>
                     {

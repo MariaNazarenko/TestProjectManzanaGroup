@@ -18,6 +18,7 @@ namespace WcfService.Models.Repositories
         /// </summary>
         /// <param name="cheque">Чек</param>
         void SaveCheque(Cheque cheque);
+
         /// <summary>
         /// Получение списка чеков
         /// </summary>
@@ -25,16 +26,26 @@ namespace WcfService.Models.Repositories
         /// <returns>Коллекция модели чека</returns>
         List<Cheque> GetChequesPack(int packSize);
     }
+
     /// <summary>
-    /// Репозитоорий для работы с чеками
+    /// Репозиторий для работы с чеками
     /// </summary>
-    public class ChequeRepository: IChequeRepository
+    public class ChequeRepository : IChequeRepository
     {
+        /// <summary>
+        /// Строка соединения с базой данных
+        /// </summary>
         private string connectionString;
-        public ChequeRepository(string _connectionString)
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ChequeRepository" /> 
+        /// </summary>
+        /// <param name="connectionString">Строка соединения с базой данных</param>
+        public ChequeRepository(string connectionString)
         {
-            connectionString = _connectionString;
+            this.connectionString = connectionString;
         }
+
         /// <summary>
         /// Сохранение чека
         /// </summary>
@@ -48,10 +59,11 @@ namespace WcfService.Models.Repositories
                 dynamicParams.Add("cheque_number", cheque.Number);
                 dynamicParams.Add("summ", cheque.Summ);
                 dynamicParams.Add("discount", cheque.Discount);
-                dynamicParams.Add("articles", String.Join(";", cheque.Articles));
+                dynamicParams.Add("articles", string.Join(";", cheque.Articles));
                 db.Execute("custom.save_cheques", dynamicParams, commandType: CommandType.StoredProcedure);
             }
         }
+
         /// <summary>
         /// Получение списка чеков
         /// </summary>
@@ -65,11 +77,12 @@ namespace WcfService.Models.Repositories
                 dynamicParams.Add("pack_size", packSize);
                 var result = db.Query<Cheque>("get_cheques_pack", dynamicParams, commandType: CommandType.StoredProcedure).ToList();
                 return result;
-            }            
+            }
         }
     }
+
     /// <summary>
-    /// Фейковый репозитоорий для работы с чеками
+    /// Фейковый репозиторий для работы с чеками
     /// </summary>
     public class FakeChequeRepository : IChequeRepository
     {
@@ -86,13 +99,13 @@ namespace WcfService.Models.Repositories
                 using (var streamWriter = new StreamWriter(path))
                 {
                     streamWriter.Write(cheque);
-                    streamWriter.Close();
                 }
             }
-            catch(Exception ex)
+            catch
             {
             }
         }
+
         /// <summary>
         /// Получение списка чеков
         /// </summary>

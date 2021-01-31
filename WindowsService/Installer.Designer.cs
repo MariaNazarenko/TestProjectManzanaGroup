@@ -1,5 +1,4 @@
-﻿
-namespace WindowsService
+﻿namespace WindowsService
 {
     partial class Installer
     {
@@ -15,9 +14,8 @@ namespace WindowsService
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
+
             base.Dispose(disposing);
         }
 

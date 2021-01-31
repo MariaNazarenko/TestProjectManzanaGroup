@@ -8,24 +8,28 @@ namespace WcfService.Models
     public class Cheque
     {
         /// <summary>
-        /// Идентификатор
+        /// Получет или задает идентификатор
         /// </summary>
         public Guid Id { get; set; }
+
         /// <summary>
-        /// Номер
-        /// </summary>
+        /// Получет или задает номер
+        /// </summary>       
         public string Number { get; set; }
+
         /// <summary>
-        /// Сумма
-        /// </summary>
+        /// Получет или задает сумму
+        /// </summary>        
         public decimal Summ { get; set; }
+
         /// <summary>
-        /// Скидка
-        /// </summary>
+        /// Получет или задает скидку
+        /// </summary>        
         public decimal Discount { get; set; }
+
         /// <summary>
-        /// Артикли
-        /// </summary>
+        /// Получет или задает артикли
+        /// </summary>        
         public string[] Articles { get; set; }
     }
 }

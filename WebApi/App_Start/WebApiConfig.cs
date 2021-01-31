@@ -2,6 +2,9 @@
 
 namespace WebApi
 {
+    /// <summary>
+    /// Конфигуратор Web Api
+    /// </summary>
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
@@ -14,8 +17,7 @@ namespace WebApi
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+                defaults: new { id = RouteParameter.Optional });
         }
     }
 }

@@ -10,16 +10,21 @@ namespace WebApi.Controllers
     /// </summary>
     public class ChequeController : ApiController
     {
-        ServiceClient client = new ServiceClient();
+        /// <summary>
+        /// Клиент WCF сервиса
+        /// </summary>
+        private ServiceClient client = new ServiceClient();
+
         /// <summary>
         /// Сохранение чека
         /// </summary>
-        /// <param name="cheque">Чек</param>
+        /// <param name="cheque">Чек</param>        
         [HttpPost]
         public void SaveCheque([FromBody] Cheque cheque)
         {
             client.SaveCheque(cheque);
         }
+
         /// <summary>
         /// Получение чеков
         /// </summary>

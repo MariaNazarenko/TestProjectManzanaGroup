@@ -1,12 +1,15 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.IO;
 using System.ServiceProcess;
 using Newtonsoft.Json;
 using WindowsService.ServiceReference;
+using log4net;
 
 namespace WindowsService
 {
+    /// <summary>
+    /// Сервис
+    /// </summary>
     public partial class Service : ServiceBase
     {
         public static readonly ILog log = LogManager.GetLogger("LOGGER");
@@ -18,6 +21,10 @@ namespace WindowsService
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Старт сервиса
+        /// </summary>
+        /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
             Logger.InitLogger();
@@ -38,11 +45,22 @@ namespace WindowsService
                     var fileWatcher = new FileWatcher(watcherDir);
                     fileWatcher.OnGetData += ReceiveData;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     log.Error("Не удалось содать папку, возникло исключение.", ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Остановка сервиса
+        /// </summary>
+        protected override void OnStop()
+        {
+            if (fileWatcher != null)
+                fileWatcher.OnGetData -= ReceiveData;
+
+            log.Info("Остановка сервиса");
         }
 
         /// <summary>
@@ -58,10 +76,11 @@ namespace WindowsService
                 {
                     client.SaveCheque(cheque);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     log.Error("Не удалось сохранить чек.", ex);
                 }
+
                 fileWatcher.MoveFileinComplete(pathFile);
                 return;
             }
@@ -69,14 +88,8 @@ namespace WindowsService
             {
                 log.Error("Не удалось корректно преобразовать данные в json.", ex);
             }
+
             fileWatcher.MoveFileinGarbage(pathFile);
-        }
-  
-        protected override void OnStop()
-        {
-            if (fileWatcher != null)
-                fileWatcher.OnGetData -= ReceiveData;
-            log.Info("Остановка сервиса");
         }
     }
 }

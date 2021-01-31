@@ -1,6 +1,8 @@
-﻿
-namespace WindowsService
+﻿namespace WindowsService
 {
+    /// <summary>
+    /// Сервис
+    /// </summary>
     partial class Service
     {
         /// <summary> 
@@ -18,6 +20,7 @@ namespace WindowsService
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

@@ -1,6 +1,6 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.IO;
+using log4net;
 
 namespace WindowsService
 {
@@ -9,16 +9,8 @@ namespace WindowsService
     /// </summary>
     public class FileWatcher
     {
-        public static readonly ILog log = LogManager.GetLogger("LOGGER");
-
-        public delegate void GetDataHandler(string pathFile, string data);
-        public event GetDataHandler OnGetData;
+        private static readonly ILog Log = LogManager.GetLogger("LOGGER");
         private FileSystemWatcher fileWatcher;
-        private event FileSystemEventHandler EventCreateFile
-        {
-            add { fileWatcher.Created += value; }
-            remove { fileWatcher.Created -= value; }
-        }
 
         public FileWatcher(string watcherDir)
         {
@@ -26,8 +18,56 @@ namespace WindowsService
             fileWatcher.EnableRaisingEvents = true;
             fileWatcher.IncludeSubdirectories = false;
             EventCreateFile += FileCreate;
-            log.Info("Начинается наблюдение за папкой " + watcherDir);
+            Log.Info("Начинается наблюдение за папкой " + watcherDir);
         }
+
+        public delegate void GetDataHandler(string pathFile, string data);
+
+        private event FileSystemEventHandler EventCreateFile
+        {
+            add { fileWatcher.Created += value; }
+
+            remove { fileWatcher.Created -= value; }
+        }
+
+        public event GetDataHandler OnGetData;
+
+        /// <summary>
+        /// Перемещение файла в папку необработанных файлов
+        /// </summary>
+        /// <param name="pathFile">Путь к исходному файлу</param>
+        public void MoveFileinGarbage(string pathFile)
+        {
+            string pathGarbageDir = Properties.Settings.Default.PathGarbageDir;
+            try
+            {
+                Directory.CreateDirectory(pathGarbageDir);
+                File.Move(pathFile, pathGarbageDir + "\\" + Path.GetFileName(pathFile));
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Не удалось переместить файл в папку необработанных файлов.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Перемещение файла в папку обработанных файлов
+        /// </summary>
+        /// <param name="pathFile">Путь к исходному файлу</param>
+        public void MoveFileinComplete(string pathFile)
+        {
+            string pathCompleteDir = Properties.Settings.Default.PathCompleteDir;
+            try
+            {
+                Directory.CreateDirectory(pathCompleteDir);
+                File.Move(pathFile, pathCompleteDir + "\\" + Path.GetFileName(pathFile));
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Не удалось переместить файл  в папку обработанных файлов.", ex);
+            }
+        }
+
         /// <summary>
         /// Метод возникающий при появлении файла
         /// </summary>
@@ -36,7 +76,7 @@ namespace WindowsService
         private void FileCreate(object sender, FileSystemEventArgs e)
         {
             var pathFile = e.FullPath;
-            log.Info("В папке обнаружен файл " + pathFile);
+            Log.Info("В папке обнаружен файл " + pathFile);
             if (Path.GetExtension(pathFile) == ".txt")
             {
                 string data = null;
@@ -52,46 +92,16 @@ namespace WindowsService
                     return;
                 }
                 else
-                    log.Error("Не удалось считать данные или файл пуст");
+                {
+                    Log.Error("Не удалось считать данные или файл пуст");
+                }
             }
             else
-                log.Error("Расширение файла не соответствует txt");
+            {
+                Log.Error("Расширение файла не соответствует txt");
+            }
 
             MoveFileinGarbage(pathFile);
-        }
-        /// <summary>
-        /// Перемещение файла в папку необработанных файлов
-        /// </summary>
-        /// <param name="pathFile">Путь к исходному файлу</param>
-        public void MoveFileinGarbage(string pathFile)
-        {
-            string pathGarbageDir = Properties.Settings.Default.PathGarbageDir ;
-            try
-            {
-                Directory.CreateDirectory(pathGarbageDir);
-                File.Move(pathFile, pathGarbageDir + "\\" + Path.GetFileName(pathFile));
-            }
-            catch (Exception ex)
-            {
-                log.Error("Не удалось переместить файл в папку необработанных файлов.", ex);
-            }
-        }
-        /// <summary>
-        /// Перемещение файла в папку обработанных файлов
-        /// </summary>
-        /// <param name="pathFile">Путь к исходному файлу</param>
-        public void MoveFileinComplete(string pathFile)
-        {
-            string pathCompleteDir = Properties.Settings.Default.PathCompleteDir;
-            try
-            {
-                Directory.CreateDirectory(pathCompleteDir);
-                File.Move(pathFile, pathCompleteDir + "\\" + Path.GetFileName(pathFile));
-            }
-            catch (Exception ex)
-            {
-                log.Error("Не удалось переместить файл  в папку обработанных файлов.", ex);
-            }
         }
     }
 }
