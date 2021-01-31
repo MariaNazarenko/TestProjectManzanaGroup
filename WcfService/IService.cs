@@ -23,8 +23,5 @@ namespace WcfService
         /// <param name="cheque">Чек</param>
         [OperationContract]
         void SaveCheque(Cheque cheque);
-
-        [OperationContract]
-        string Test();
     }
 }

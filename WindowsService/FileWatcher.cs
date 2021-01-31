@@ -40,9 +40,10 @@ namespace WindowsService
             if (Path.GetExtension(pathFile) == ".txt")
             {
                 string data = null;
-                using (var sreamReader = new StreamReader(pathFile))
+                using (var streamReader = new StreamReader(pathFile))
                 {
-                    data = sreamReader.ReadToEnd();
+                    data = streamReader.ReadToEnd();
+                    streamReader.Close();
                 }
 
                 if (!string.IsNullOrEmpty(data))
@@ -72,7 +73,7 @@ namespace WindowsService
             }
             catch (Exception ex)
             {
-                log.Error("Не удалось переместить файл в папку необработанных файлов." + ex.Message);
+                log.Error("Не удалось переместить файл в папку необработанных файлов.", ex);
             }
         }
         /// <summary>
@@ -89,7 +90,7 @@ namespace WindowsService
             }
             catch (Exception ex)
             {
-                log.Error("Не удалось переместить файл  в папку обработанных файлов." + ex.Message);
+                log.Error("Не удалось переместить файл  в папку обработанных файлов.", ex);
             }
         }
     }

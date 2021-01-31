@@ -137,12 +137,6 @@ namespace WindowsService.ServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/SaveCheque", ReplyAction="http://tempuri.org/IService/SaveChequeResponse")]
         System.Threading.Tasks.Task SaveChequeAsync(WindowsService.ServiceReference.Cheque cheque);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Test", ReplyAction="http://tempuri.org/IService/TestResponse")]
-        string Test();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Test", ReplyAction="http://tempuri.org/IService/TestResponse")]
-        System.Threading.Tasks.Task<string> TestAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -186,14 +180,6 @@ namespace WindowsService.ServiceReference {
         
         public System.Threading.Tasks.Task SaveChequeAsync(WindowsService.ServiceReference.Cheque cheque) {
             return base.Channel.SaveChequeAsync(cheque);
-        }
-        
-        public string Test() {
-            return base.Channel.Test();
-        }
-        
-        public System.Threading.Tasks.Task<string> TestAsync() {
-            return base.Channel.TestAsync();
         }
     }
 }

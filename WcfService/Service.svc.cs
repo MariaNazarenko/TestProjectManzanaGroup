@@ -10,9 +10,9 @@ namespace WcfService
         public Service()
         {
             if (Properties.Settings.Default.IsFakeRepository == true)
-                chequeRepository = new ChequeRepository(Properties.Settings.Default.ConnectionString);
-            else
                 chequeRepository = new FakeChequeRepository();
+            else
+                chequeRepository = new ChequeRepository(Properties.Settings.Default.ConnectionString);
         }
         /// <summary>
         /// Полученияе списка чеков
@@ -25,10 +25,5 @@ namespace WcfService
         /// </summary>
         /// <param name="cheque">Чек</param>
         public void SaveCheque(Cheque cheque)=> chequeRepository.SaveCheque(cheque);
-
-        public string Test()
-        {
-            return "test";
-        }
     }
 }

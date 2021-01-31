@@ -89,7 +89,7 @@ namespace WcfService.Models.Repositories
                     streamWriter.Close();
                 }
             }
-            catch
+            catch(Exception ex)
             {
             }
         }
@@ -101,14 +101,14 @@ namespace WcfService.Models.Repositories
         public List<Cheque> GetChequesPack(int packSize)
         {
             List<Cheque> cheques = new List<Cheque>();
-            for(int i = 0; i <packSize; i++)
+            for (int i = 1; i <= packSize; i++)
             {
                 var cheque = new Cheque();
                 cheque.Id = Guid.NewGuid();
                 cheque.Number = i.ToString();
                 cheque.Summ = 100;
                 cheque.Discount = 10;
-                cheque.Articles = new string[3]{ "12345", "123456", "1234567"};
+                cheque.Articles = new string[3] { "12345", "123456", "1234567" };
                 cheques.Add(cheque);
             }
 

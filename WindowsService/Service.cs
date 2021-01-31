@@ -11,7 +11,7 @@ namespace WindowsService
     {
         public static readonly ILog log = LogManager.GetLogger("LOGGER");
         ServiceReference.ServiceClient client = new ServiceReference.ServiceClient();
-        FileWatcher fileWatcher;
+        FileWatcher fileWatcher = null;
 
         public Service()
         {
@@ -40,7 +40,7 @@ namespace WindowsService
                 }
                 catch(Exception ex)
                 {
-                    log.Error("Не удалось содать папку, возникло исключение." + ex.Message);
+                    log.Error("Не удалось содать папку, возникло исключение.", ex);
                 }
             }
         }
@@ -54,19 +54,28 @@ namespace WindowsService
             try
             {
                 var cheque = JsonConvert.DeserializeObject<Cheque>(data);
-                client.SaveCheque(cheque);
+                try
+                {
+                    client.SaveCheque(cheque);
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Не удалось сохранить чек.", ex);
+                }
                 fileWatcher.MoveFileinComplete(pathFile);
                 return;
             }
             catch (Exception ex)
             {
-                log.Error("Не удалось корректно преобразовать данные в json." + ex.Message);
+                log.Error("Не удалось корректно преобразовать данные в json.", ex);
             }
             fileWatcher.MoveFileinGarbage(pathFile);
         }
   
         protected override void OnStop()
         {
+            if (fileWatcher != null)
+                fileWatcher.OnGetData -= ReceiveData;
             log.Info("Остановка сервиса");
         }
     }
