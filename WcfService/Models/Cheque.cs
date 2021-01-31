@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WindowsService.Models
+namespace WcfService.Models
 {
     /// <summary>
     /// Модель чека

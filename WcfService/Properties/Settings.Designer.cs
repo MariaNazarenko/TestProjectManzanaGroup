@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WindowsService.Properties {
+namespace WcfService.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -23,39 +23,22 @@ namespace WindowsService.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\User\\Documents\\Complete")]
-        public string PathCompleteDir {
+        [global::System.Configuration.DefaultSettingValueAttribute("data source=some_server;initial catalog=some_db;integrated security=SSPI;Applicat" +
+            "ion Name=TestApp")]
+        public string ConnectionString {
             get {
-                return ((string)(this["PathCompleteDir"]));
-            }
-            set {
-                this["PathCompleteDir"] = value;
+                return ((string)(this["ConnectionString"]));
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\User\\Documents\\Garbage")]
-        public string PathGarbageDir {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsFakeRepository {
             get {
-                return ((string)(this["PathGarbageDir"]));
-            }
-            set {
-                this["PathGarbageDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\User\\Documents\\Dir")]
-        public string PathDir {
-            get {
-                return ((string)(this["PathDir"]));
-            }
-            set {
-                this["PathDir"] = value;
+                return ((bool)(this["IsFakeRepository"]));
             }
         }
     }

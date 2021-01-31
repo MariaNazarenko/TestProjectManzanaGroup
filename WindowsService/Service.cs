@@ -1,18 +1,16 @@
 ﻿using log4net;
-using log4net.Repository.Hierarchy;
 using System;
 using System.IO;
-using System.Reflection;
 using System.ServiceProcess;
-using WindowsService.Models;
 using Newtonsoft.Json;
-using System.Net.Http;
+using WindowsService.ServiceReference;
 
 namespace WindowsService
 {
     public partial class Service : ServiceBase
     {
         public static readonly ILog log = LogManager.GetLogger("LOGGER");
+        ServiceReference.ServiceClient client = new ServiceReference.ServiceClient();
         FileWatcher fileWatcher;
 
         public Service()
@@ -42,7 +40,7 @@ namespace WindowsService
                 }
                 catch(Exception ex)
                 {
-                    log.Error("Не удалось содать папку, возникло исключение:" + ex);
+                    log.Error("Не удалось содать папку, возникло исключение." + ex.Message);
                 }
             }
         }
@@ -55,22 +53,16 @@ namespace WindowsService
         {
             try
             {
-                JsonConvert.DeserializeObject<Cheque>(data);
-                using (var client = new HttpClient())
-                {
-                    string uri = string.Empty;
-                    var request = new HttpRequestMessage(HttpMethod.Post, uri);
-                    request.Headers.Add("Accept", "application/json");
-                    request.Content = new StringContent(data);
-                    client.SendAsync(request);
-                    fileWatcher.MoveFileinComplete(pathFile);
-                }
+                var cheque = JsonConvert.DeserializeObject<Cheque>(data);
+                client.SaveCheque(cheque);
+                fileWatcher.MoveFileinComplete(pathFile);
+                return;
             }
-            catch
+            catch (Exception ex)
             {
-                fileWatcher.MoveFileinGarbage(pathFile);
-                log.Error("Не удалось корректно преобразовать данные в json");
+                log.Error("Не удалось корректно преобразовать данные в json." + ex.Message);
             }
+            fileWatcher.MoveFileinGarbage(pathFile);
         }
   
         protected override void OnStop()
