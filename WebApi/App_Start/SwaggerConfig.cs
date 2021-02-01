@@ -21,7 +21,7 @@ namespace WebApi
                 .EnableSwagger(c =>
                     {
                         c.SingleApiVersion("v1", "WebApi");
-                        c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                        c.IncludeXmlComments(string.Format(@"{0}\bin\WebApi.xml", System.AppDomain.CurrentDomain.BaseDirectory));
                     })
                 .EnableSwaggerUi(c =>
                     {
