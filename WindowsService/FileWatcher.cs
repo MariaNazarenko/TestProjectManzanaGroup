@@ -12,24 +12,49 @@ namespace WindowsService
         private static readonly ILog Log = LogManager.GetLogger("LOGGER");
         private FileSystemWatcher fileWatcher;
 
+        /// <summary>
+        /// Конструктор наблюдателя файлов
+        /// </summary>
+        /// <param name="watcherDir">Папка для наблюдения</param>
         public FileWatcher(string watcherDir)
         {
             fileWatcher = new FileSystemWatcher(watcherDir);
-            fileWatcher.EnableRaisingEvents = true;
-            fileWatcher.IncludeSubdirectories = false;
+            fileWatcher.NotifyFilter = NotifyFilters.LastAccess
+                                    | NotifyFilters.LastWrite
+                                    | NotifyFilters.FileName
+                                    | NotifyFilters.CreationTime
+                                    | NotifyFilters.DirectoryName;
             EventCreateFile += FileCreate;
+            EventChangeFile += FileCreate;
+            fileWatcher.IncludeSubdirectories = false;
+            fileWatcher.EnableRaisingEvents = true;
+
             Log.Info("Начинается наблюдение за папкой " + watcherDir);
         }
 
         public delegate void GetDataHandler(string pathFile, string data);
 
+        /// <summary>
+        /// Событие создания файла
+        /// </summary>
         private event FileSystemEventHandler EventCreateFile
         {
             add { fileWatcher.Created += value; }
-
             remove { fileWatcher.Created -= value; }
         }
 
+        /// <summary>
+        /// Событие изменения файла
+        /// </summary>
+        private event FileSystemEventHandler EventChangeFile
+        {
+            add { fileWatcher.Changed += value; }
+            remove { fileWatcher.Changed -= value; }
+        }
+
+        /// <summary>
+        /// Событие получения данных
+        /// </summary>
         public event GetDataHandler OnGetData;
 
         /// <summary>
@@ -72,36 +97,41 @@ namespace WindowsService
         /// Метод возникающий при появлении файла
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">Данные события папки</param>
         private void FileCreate(object sender, FileSystemEventArgs e)
         {
             var pathFile = e.FullPath;
-            Log.Info("В папке обнаружен файл " + pathFile);
-            if (Path.GetExtension(pathFile) == ".txt")
+            if (File.Exists(pathFile))
             {
-                string data = null;
-                using (var streamReader = new StreamReader(pathFile))
+                Log.Info("В папке обнаружен файл " + pathFile);
+                if (Path.GetExtension(pathFile) == ".txt")
                 {
-                    data = streamReader.ReadToEnd();
-                    streamReader.Close();
-                }
+                    try
+                    {
+                        string data = File.ReadAllText(pathFile);
+                        if (!string.IsNullOrEmpty(data))
+                        {
+                            OnGetData?.Invoke(pathFile, data);
+                            return;
+                        }
+                        else
+                        {
+                            Log.Error("Файл пуст");
+                        }
+                    }
 
-                if (!string.IsNullOrEmpty(data))
-                {
-                    OnGetData?.Invoke(pathFile, data);
-                    return;
+                    catch (Exception ex)
+                    {
+                        Log.Error("Не удалось считать данные", ex);
+                    }
                 }
                 else
                 {
-                    Log.Error("Не удалось считать данные или файл пуст");
+                    Log.Error("Расширение файла не соответствует txt");
                 }
-            }
-            else
-            {
-                Log.Error("Расширение файла не соответствует txt");
-            }
 
-            MoveFileinGarbage(pathFile);
+                MoveFileinGarbage(pathFile);
+            }
         }
     }
 }
